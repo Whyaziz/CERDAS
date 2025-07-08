@@ -6,11 +6,13 @@ import { useSelectedLayoutSegment } from "next/navigation";
 import { gsap } from "gsap";
 import Image from "next/image";
 import { Squash as Hamburger } from "hamburger-react";
+import { useScroll } from "@/contexts/ScrollContext";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrollTop, setScrollTop] = useState(0);
   const activeSegment = useSelectedLayoutSegment();
+  const { setAllowScroll } = useScroll();
   const links = [
     { label: "Beranda", path: "/", targetSegment: null },
     {
@@ -26,13 +28,20 @@ export default function Navbar() {
     },
   ];
 
+  // Disable scrolling when mobile menu is open
+  useEffect(() => {
+    setAllowScroll(!isMobileMenuOpen);
+  }, [isMobileMenuOpen, setAllowScroll]);
+
   useEffect(() => {
     const navbar = document.getElementById("navbar");
 
     const handleScroll = () => {
+      if (isMobileMenuOpen) return; // Don't hide navbar when mobile menu is open
+
       const currentScrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
-      if (currentScrollTop > scrollTop) {
+      if (currentScrollTop > scrollTop && currentScrollTop > 50) {
         gsap.to(navbar, { y: -100, duration: 0.5 });
       } else {
         gsap.to(navbar, { y: 0, duration: 0.5 });
@@ -45,7 +54,12 @@ export default function Navbar() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [scrollTop]);
+  }, [scrollTop, isMobileMenuOpen]);
+
+  // Handle mobile menu link clicks
+  const handleMobileLinkClick = () => {
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <nav
@@ -113,6 +127,7 @@ export default function Navbar() {
         `}
             key={link.label}
             href={link.path}
+            onClick={handleMobileLinkClick}
           >
             {link.label}
           </Link>
