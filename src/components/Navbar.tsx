@@ -50,18 +50,18 @@ export default function Navbar() {
   return (
     <nav
       id="navbar"
-      className={`bg-moss-green text-white px-[10%] flex flex-col w-full fixed top-0 z-[9999] transition-colors duration-500 shadow-xl font-medium`}
+      className={`bg-beige text-moss-green px-[10%] flex flex-col w-full fixed top-0 z-[9999] transition-colors duration-500 shadow-xl font-medium`}
     >
-      <div className="flex flex-row justify-between items-center py-4">
+      <div className="flex flex-row justify-between items-center">
         <Link href="/">
-          {/* <Image
+          <Image
             height={1000}
             width={1000}
-            src="/assets/images/layouts/logo.png"
-            className="h-8 md:h-12 xl:h-14 w-auto cursor-pointer"
+            src="/Logo-with-text.png"
+            className="h-10 md:h-14 xl:h-18 w-auto cursor-pointer"
             alt="Logo"
-          /> */}
-          CERDAS
+          />
+          {/* CERDAS */}
         </Link>
 
         {/* Desktop Navbar */}
@@ -99,7 +99,7 @@ export default function Navbar() {
       {/* Mobile Navbar */}
       <div
         className={`flex flex-col lg:flex-row gap-6 py-4 ${
-          scrollTop < 100 ? "bg-moss-green" : "bg-transparent"
+          scrollTop < 100 ? "bg-white" : "bg-transparent"
         } ${isMobileMenuOpen ? "block" : "hidden"}`}
       >
         {links.map((link) => (

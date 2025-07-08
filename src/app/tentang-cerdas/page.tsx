@@ -15,7 +15,7 @@ export default function TentangPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-off-white px-6 py-12 text-gray-800 pt-[20%] md:pt-[15%] lg:pt-[5%]">
+    <main className="min-h-screen bg-off-white px-6 py-12 text-gray-800 pt-[20%] md:pt-[15%] lg:pt-[8%]">
       <div ref={sectionRef} className="max-w-3xl mx-auto flex flex-col gap-10">
         <header className="text-center">
           <h1 className="text-3xl font-bold text-moss-green mb-2">

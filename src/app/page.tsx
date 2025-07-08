@@ -146,10 +146,19 @@ export default function HomePage() {
         className="w-full h-screen flex flex-col items-end justify-center bg-[url('/assets/home/bg-hero-1.jpg')] bg-cover bg-center"
       >
         <div className="w-full h-full bg-gradient-to-bl from-transparent to-black/90 flex flex-col items-start justify-center px-4 sm:px-[5%] md:px-[8%]">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-3 md:mb-4 text-moss-green">
-            CERDAS
-          </h1>
-          <p className="text-base sm:text-lg mb-4 sm:mb-6 text-white w-full sm:w-[80%] md:w-[70%] lg:w-[50%]">
+          <div className="flex flex-row items-center mb-3 md:mb-4">
+            <Image
+              src="/Logo.png"
+              alt="Logo"
+              width={600}
+              height={600}
+              className="h-10 md:h-14 xl:h-18 w-auto cursor-pointer"
+            />
+            <h1 className="text-3xl sm:text-4xl font-bold text-moss-green">
+              CERDAS
+            </h1>
+          </div>
+          <p className="text-b  ase sm:text-lg mb-4 sm:mb-6 text-white w-full sm:w-[80%] md:w-[70%] lg:w-[50%]">
             CERDAS adalah sebuah website interaktif yang dirancang untuk
             membantu orang tua mengevaluasi status gizi anak balita secara
             mandiri dengan mudah. Berdasarkan Permenkes No. 2 Tahun 2020, CERDAS
@@ -161,7 +170,7 @@ export default function HomePage() {
           <div className="w-full sm:w-[80%] md:w-[70%] lg:w-[50%] flex flex-col sm:flex-row justify-start gap-3 sm:gap-4">
             <a
               href="/cek-status-gizi-anak"
-              className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl bg-moss-green text-off-white font-semibold hover:opacity-90 transition text-center"
+              className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl bg-white text-moss-green border border-moss-green font-semibold hover:opacity-90 transition text-center"
             >
               Cek Status Gizi Anak
             </a>
