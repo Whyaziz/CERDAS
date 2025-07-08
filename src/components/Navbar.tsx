@@ -89,7 +89,7 @@ export default function Navbar() {
             easing="ease-in"
             toggled={isMobileMenuOpen}
             toggle={setIsMobileMenuOpen}
-            color={`#ffffff`}
+            color={`#4F7942`}
             size={20}
             hideOutline={false}
           />
@@ -99,7 +99,7 @@ export default function Navbar() {
       {/* Mobile Navbar */}
       <div
         className={`flex flex-col lg:flex-row gap-6 py-4 ${
-          scrollTop < 100 ? "bg-white" : "bg-transparent"
+          scrollTop < 100 ? "bg-beige" : "bg-transparent"
         } ${isMobileMenuOpen ? "block" : "hidden"}`}
       >
         {links.map((link) => (
@@ -107,7 +107,7 @@ export default function Navbar() {
             className={`
           ${
             activeSegment === link.targetSegment
-              ? "border-b-2 border-white"
+              ? "border-b-2 border-moss-green"
               : "hover:scale-110 transition-transform"
           }
         `}
