@@ -73,7 +73,6 @@ export default function CekStatusGiziPage() {
 
     const lines = csvText.split("\n");
 
-    // Parse BB/U data for males
     let malesBBU = false;
     let femalesBBU = false;
     let malesTBU = false;
@@ -81,13 +80,83 @@ export default function CekStatusGiziPage() {
     let malesBBTB = false;
     let femalesBBTB = false;
 
+    // Add these counters to check if sections are detected
+    let malesBBUCount = 0;
+    let femalesBBUCount = 0;
+    let malesTBUCount = 0;
+    let femalesTBUCount = 0;
+    let malesBBTBCount = 0;
+    let femalesBBTBCount = 0;
+
+    // Analyze the CSV structure
+    console.log("Total lines in CSV:", lines.length);
+
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
+      if (!line) continue; // Skip empty lines
 
-      // Check what section we're in
+      // Log a few lines to help with debugging
+      if (i < 10 || (i > 60 && i < 75) || (i > 130 && i < 140)) {
+        console.log(`Line ${i}: ${line.substring(0, 60)}...`);
+      }
+
+      // Check for combined header lines that contain both male and female data
       if (
+        line.includes(
+          "Standar Berat Badan menurut Umur (BB/U) Anak Laki-Laki"
+        ) &&
+        line.includes("Standar Berat Badan menurut Umur (BB/U) Anak Perempuan")
+      ) {
+        console.log("Found combined BB/U header at line", i);
+        malesBBU = true;
+        femalesBBU = true;
+        malesTBU = false;
+        femalesTBU = false;
+        malesBBTB = false;
+        femalesBBTB = false;
+        continue;
+      } else if (
+        line.includes(
+          "Standar Tinggi Badan menurut Umur (TB/U) Anak Laki-Laki"
+        ) &&
+        line.includes("Standar Tinggi Badan menurut Umur (TB/U) Anak Perempuan")
+      ) {
+        console.log("Found combined TB/U header at line", i);
+        malesBBU = false;
+        femalesBBU = false;
+        malesTBU = true;
+        femalesTBU = true;
+        malesBBTB = false;
+        femalesBBTB = false;
+        continue;
+      } else if (
+        (line.includes(
+          "Standar Berat Badan menurut Panjang Badan (BB/PB) Anak Laki-Laki"
+        ) ||
+          line.includes(
+            "Standar Berat Badan menurut Tinggi Badan (BB/TB) Anak Laki-Laki"
+          )) &&
+        (line.includes(
+          "Standar Berat Badan menurut Panjang Badan (BB/PB) Anak Perempuan"
+        ) ||
+          line.includes(
+            "Standar Berat Badan menurut Tinggi Badan (BB/TB) Anak Perempuan"
+          ))
+      ) {
+        console.log("Found combined BB/TB header at line", i);
+        malesBBU = false;
+        femalesBBU = false;
+        malesTBU = false;
+        femalesTBU = false;
+        malesBBTB = true;
+        femalesBBTB = true;
+        continue;
+      }
+      // Keep the individual section checks as fallback
+      else if (
         line.includes("Standar Berat Badan menurut Umur (BB/U) Anak Laki-Laki")
       ) {
+        console.log("Found Male BB/U section at line", i);
         malesBBU = true;
         femalesBBU = false;
         malesTBU = false;
@@ -98,6 +167,7 @@ export default function CekStatusGiziPage() {
       } else if (
         line.includes("Standar Berat Badan menurut Umur (BB/U) Anak Perempuan")
       ) {
+        console.log("Found Female BB/U section at line", i);
         malesBBU = false;
         femalesBBU = true;
         malesTBU = false;
@@ -108,6 +178,7 @@ export default function CekStatusGiziPage() {
       } else if (
         line.includes("Standar Tinggi Badan menurut Umur (TB/U) Anak Laki-Laki")
       ) {
+        console.log("Found Male TB/U section at line", i);
         malesBBU = false;
         femalesBBU = false;
         malesTBU = true;
@@ -118,6 +189,7 @@ export default function CekStatusGiziPage() {
       } else if (
         line.includes("Standar Tinggi Badan menurut Umur (TB/U) Anak Perempuan")
       ) {
+        console.log("Found Female TB/U section at line", i);
         malesBBU = false;
         femalesBBU = false;
         malesTBU = false;
@@ -133,6 +205,7 @@ export default function CekStatusGiziPage() {
           "Standar Berat Badan menurut Tinggi Badan (BB/TB) Anak Laki-Laki"
         )
       ) {
+        console.log("Found Male BB/TB section at line", i);
         malesBBU = false;
         femalesBBU = false;
         malesTBU = false;
@@ -148,6 +221,7 @@ export default function CekStatusGiziPage() {
           "Standar Berat Badan menurut Tinggi Badan (BB/TB) Anak Perempuan"
         )
       ) {
+        console.log("Found Female BB/TB section at line", i);
         malesBBU = false;
         femalesBBU = false;
         malesTBU = false;
@@ -159,11 +233,10 @@ export default function CekStatusGiziPage() {
 
       const cells = line.split(",");
 
-      // Parse data rows
-      if (malesBBU && cells.length > 8) {
+      // Parse males data
+      if (malesBBU && cells.length > 11) {
         const age = Number(cells[4]);
         if (!isNaN(age) && age >= 0 && age <= 60) {
-          // Values order: -3SD, -2SD, -1SD, median, +1SD, +2SD, +3SD
           data.L.bbu[age] = [
             Number(cells[5]),
             Number(cells[6]),
@@ -173,8 +246,12 @@ export default function CekStatusGiziPage() {
             Number(cells[10]),
             Number(cells[11]),
           ];
+          malesBBUCount++;
         }
-      } else if (femalesBBU && cells.length > 8) {
+      }
+
+      // Parse females data - in the same loop, but with different column indices
+      if (femalesBBU && cells.length > 20) {
         const age = Number(cells[13]);
         if (!isNaN(age) && age >= 0 && age <= 60) {
           data.P.bbu[age] = [
@@ -186,8 +263,12 @@ export default function CekStatusGiziPage() {
             Number(cells[19]),
             Number(cells[20]),
           ];
+          femalesBBUCount++;
         }
-      } else if (malesTBU && cells.length > 8) {
+      }
+
+      // Parse males TB/U data
+      if (malesTBU && cells.length > 11) {
         const age = Number(cells[4]);
         if (!isNaN(age) && age >= 0 && age <= 60) {
           data.L.tbu[age] = [
@@ -199,8 +280,12 @@ export default function CekStatusGiziPage() {
             Number(cells[10]),
             Number(cells[11]),
           ];
+          malesTBUCount++;
         }
-      } else if (femalesTBU && cells.length > 8) {
+      }
+
+      // Parse females TB/U data
+      if (femalesTBU && cells.length > 20) {
         const age = Number(cells[13]);
         if (!isNaN(age) && age >= 0 && age <= 60) {
           data.P.tbu[age] = [
@@ -212,8 +297,12 @@ export default function CekStatusGiziPage() {
             Number(cells[19]),
             Number(cells[20]),
           ];
+          femalesTBUCount++;
         }
-      } else if (malesBBTB && cells.length > 8) {
+      }
+
+      // Parse males BB/TB data
+      if (malesBBTB && cells.length > 11) {
         const height = Number(cells[4]);
         if (!isNaN(height) && height >= 45 && height <= 120) {
           data.L.bbtb[height] = [
@@ -225,8 +314,12 @@ export default function CekStatusGiziPage() {
             Number(cells[10]),
             Number(cells[11]),
           ];
+          malesBBTBCount++;
         }
-      } else if (femalesBBTB && cells.length > 8) {
+      }
+
+      // Parse females BB/TB data
+      if (femalesBBTB && cells.length > 20) {
         const height = Number(cells[13]);
         if (!isNaN(height) && height >= 45 && height <= 120) {
           data.P.bbtb[height] = [
@@ -238,9 +331,26 @@ export default function CekStatusGiziPage() {
             Number(cells[19]),
             Number(cells[20]),
           ];
+          femalesBBTBCount++;
         }
       }
     }
+
+    // Log counts to help diagnose the issue
+    console.log("Male BB/U entries:", malesBBUCount);
+    console.log("Female BB/U entries:", femalesBBUCount);
+    console.log("Male TB/U entries:", malesTBUCount);
+    console.log("Female TB/U entries:", femalesTBUCount);
+    console.log("Male BB/TB entries:", malesBBTBCount);
+    console.log("Female BB/TB entries:", femalesBBTBCount);
+
+    // Debugging: Log the parsed data to verify
+    console.log("Parsed Male BB/U:", Object.keys(data.L.bbu).length);
+    console.log("Parsed Female BB/U:", Object.keys(data.P.bbu).length);
+    console.log("Parsed Male TB/U:", Object.keys(data.L.tbu).length);
+    console.log("Parsed Female TB/U:", Object.keys(data.P.tbu).length);
+    console.log("Parsed Male BB/TB:", Object.keys(data.L.bbtb).length);
+    console.log("Parsed Female BB/TB:", Object.keys(data.P.bbtb).length);
 
     return data;
   };

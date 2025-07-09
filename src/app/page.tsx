@@ -356,7 +356,7 @@ export default function HomePage() {
               Lihat tabel pertumbuhan anak sesuai Permenkes No. 2 Tahun 2020.
             </p>
             <a
-              href="/cek-status-gizi-anak#tabel"
+              href="/edukasi"
               className="text-moss-green font-medium hover:underline"
             >
               Lihat Acuan →

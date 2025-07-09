@@ -39,7 +39,9 @@ export default function EdukasiPage() {
         {/* Apa itu Stunting - Card Layout */}
         <section className="bg-white rounded-lg shadow-md p-6 border-l-4 border-moss-green">
           <div className="flex items-start">
-            <FaChild className="text-3xl text-moss-green mr-4 mt-1" />
+            <div className="h-full items-start">
+              <FaChild className="text-moss-green mr-4 text-3xl" />
+            </div>
             <div>
               <h2 className="text-2xl font-semibold mb-3 text-moss-green">
                 Apa Itu Stunting?
