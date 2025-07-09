@@ -514,6 +514,135 @@ export default function CekStatusGiziPage() {
     }
   };
 
+  const getDetailedRecommendation = (
+    bbuZscore: number,
+    tbuZscore: number,
+    bbtbZscore: number
+  ) => {
+    // Default recommendations
+    let recommendation = {
+      title: "Status Gizi Normal",
+      description: "Pertumbuhan anak normal sesuai standar.",
+      energy: "Sesuai AKG (~1.250–1.350 kkal)",
+      protein: "Sesuai kebutuhan (~25 g)",
+      micronutrients: "Seimbang (zat besi, zinc, vitamin A)",
+      foodExamples: "Nasi + ayam kecap + sayur bening, buah-buahan segar",
+      alertLevel: "normal", // 'severe', 'warning', 'normal', 'excess'
+    };
+
+    // BB/U - Berat badan menurut umur
+    if (bbuZscore < -3) {
+      recommendation = {
+        title: "Severely Underweight (Berat Badan Sangat Kurang)",
+        description: "Dibutuhkan catch-up growth secara cepat.",
+        energy: "20–30% di atas AKG (~1.500–1.700 kkal)",
+        protein: "3–4 g/kg BB (~30–40 g)",
+        micronutrients: "Zinc, zat besi, vitamin A, kalsium, vitamin D",
+        foodExamples:
+          "Bubur ayam santan, hati ayam, telur dadar mini, sup sayur",
+        alertLevel: "severe",
+      };
+    } else if (bbuZscore < -2) {
+      recommendation = {
+        title: "Underweight (Berat Badan Kurang)",
+        description: "Perlu upaya menaikkan berat badan ke normal.",
+        energy: "10–20% di atas AKG (~1.400–1.600 kkal)",
+        protein: "2–3 g/kg BB (~25–35 g)",
+        micronutrients: "Zinc, zat besi, vitamin A, kalsium, vitamin D",
+        foodExamples: "Pepes ikan, nasi tim telur + wortel, pisang + keju",
+        alertLevel: "warning",
+      };
+    } else if (bbuZscore > 1) {
+      recommendation = {
+        title: "Risiko Berat Badan Lebih",
+        description: "Hindari kenaikan berat badan berlebih.",
+        energy: "Sesuai AKG, kurangi snack manis dan berlemak",
+        protein: "Sesuai kebutuhan (~25 g)",
+        micronutrients: "Serat, vitamin D",
+        foodExamples: "Nasi + ikan kukus + tumis brokoli, buah-buahan segar",
+        alertLevel: "excess",
+      };
+    }
+
+    // TB/U - Tinggi badan menurut umur (prioritaskan jika stunting)
+    if (tbuZscore < -3) {
+      recommendation = {
+        title: "Severely Stunted (Sangat Pendek)",
+        description: "Fokus pada optimalisasi pertumbuhan tinggi badan.",
+        energy: "20% di atas AKG (~1.500–1.600 kkal)",
+        protein: "Tinggi protein (3–4 g/kg BB)",
+        micronutrients: "Zinc, kalsium, vitamin D",
+        foodExamples: "Sup ikan tahu, nasi tim, susu",
+        alertLevel: "severe",
+      };
+    } else if (tbuZscore < -2) {
+      recommendation = {
+        title: "Stunted (Pendek)",
+        description: "Perlu upaya mengejar pertumbuhan tinggi badan.",
+        energy: "10–20% di atas AKG",
+        protein: "Tinggi protein (2-3 g/kg BB)",
+        micronutrients: "Zinc, kalsium, vitamin D",
+        foodExamples: "Nasi + telur dadar + sayur bayam, susu",
+        alertLevel: "warning",
+      };
+    }
+
+    // BB/TB - Berat badan menurut tinggi badan (prioritaskan jika wasting atau obesitas)
+    if (bbtbZscore < -3) {
+      recommendation = {
+        title: "Severely Wasted (Gizi Buruk)",
+        description: "Dibutuhkan catch-up growth secara cepat.",
+        energy: "20–30% di atas AKG (~1.500–1.700 kkal)",
+        protein: "3–4 g/kg BB",
+        micronutrients: "Zinc, zat besi, vitamin A",
+        foodExamples: "Bubur kacang hijau santan, hati ayam, telur",
+        alertLevel: "severe",
+      };
+    } else if (bbtbZscore < -2) {
+      recommendation = {
+        title: "Wasted (Gizi Kurang)",
+        description: "Perlu upaya menaikkan berat badan.",
+        energy: "10–20% di atas AKG",
+        protein: "2–3 g/kg BB",
+        micronutrients: "Zinc, zat besi, vitamin A",
+        foodExamples: "Nasi + pepes ikan + tumis sayur",
+        alertLevel: "warning",
+      };
+    } else if (bbtbZscore > 3) {
+      recommendation = {
+        title: "Obesitas (Obese)",
+        description: "Perlu penurunan berat badan secara bertahap.",
+        energy: "10–20% di bawah AKG",
+        protein: "Cukup sesuai kebutuhan",
+        micronutrients: "Serat, vitamin D, zat besi",
+        foodExamples: "Nasi + ikan kukus, sayur rebus, snack buah",
+        alertLevel: "excess",
+      };
+    } else if (bbtbZscore > 2) {
+      recommendation = {
+        title: "Gizi Lebih (Overweight)",
+        description: "Perlu penurunan berat badan perlahan.",
+        energy: "10–15% di bawah AKG (~1.000–1.150 kkal)",
+        protein: "Cukup sesuai kebutuhan",
+        micronutrients: "Serat, vitamin D, zat besi",
+        foodExamples: "Nasi + ayam rebus, sayur",
+        alertLevel: "excess",
+      };
+    } else if (bbtbZscore > 1) {
+      recommendation = {
+        title: "Berisiko Gizi Lebih (Possible Risk of Overweight)",
+        description: "Cegah kenaikan berat badan berlebih.",
+        energy: "Sesuai AKG, kurangi snack manis",
+        protein: "Sesuai kebutuhan (~25 g)",
+        micronutrients: "Serat, vitamin D",
+        foodExamples: "Nasi + ikan kukus + sayur rebus",
+        alertLevel: "warning",
+      };
+    }
+
+    return recommendation;
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-sage-50 to-sage-100 px-4 sm:px-6 py-[30%] md:py-[20%] lg:py-[8%] text-gray-800 bg-off-white">
       <div className="max-w-3xl mx-auto">
@@ -715,96 +844,104 @@ export default function CekStatusGiziPage() {
                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                Rekomendasi
+                Rekomendasi Gizi
               </h3>
-              {hasil.zscore.bbu < -2 ||
-              hasil.zscore.tbu < -2 ||
-              hasil.zscore.bbtb < -2 ? (
-                <div className="space-y-3">
-                  <p className="text-sm">
-                    <strong className="text-red-700">
-                      Gizi kurang/stunting:
-                    </strong>{" "}
-                    Tingkatkan asupan protein hewani (telur, ikan, daging),
-                    susu, dan makanan padat gizi. Pastikan pemberian makanan
-                    seimbang dengan frekuensi yang cukup sesuai usia.
-                  </p>
-                  <p className="text-sm font-semibold text-red-600 p-3 bg-red-50 rounded-lg border border-red-100 flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-2 text-red-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                      />
-                    </svg>
-                    Konsultasikan segera ke Posyandu atau Puskesmas terdekat.
-                  </p>
-                </div>
-              ) : hasil.zscore.bbtb > 1 ? (
-                <p className="text-sm p-3 bg-blue-50 rounded-lg border border-blue-100">
-                  <strong className="text-blue-700">
-                    Berisiko berat badan lebih/obesitas:
-                  </strong>{" "}
-                  Batasi makanan manis, berlemak, dan cepat saji. Tingkatkan
-                  aktivitas fisik dan konsumsi buah serta sayur. Perhatikan pola
-                  makan sehat dan tumbuh kembang anak.
-                </p>
-              ) : (
-                <p className="text-sm p-3 bg-green-50 rounded-lg border border-green-100">
-                  <strong className="text-green-700">
-                    Pertumbuhan normal:
-                  </strong>{" "}
-                  Pertahankan pola makan seimbang dengan gizi sesuai kebutuhan
-                  anak. Tetap lakukan pemantauan tumbuh kembang secara rutin di
-                  Posyandu.
-                </p>
-              )}
-            </div>
 
-            <div className="mt-6 text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
-              <p className="flex items-center mb-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3 mr-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                Perhitungan menggunakan standar antropometri Permenkes No. 2
-                tahun 2020
-              </p>
-              <p className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3 mr-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                Hasil evaluasi ini tidak menggantikan pemeriksaan langsung oleh
-                tenaga medis
-              </p>
+              {(() => {
+                const rec = getDetailedRecommendation(
+                  hasil.zscore.bbu,
+                  hasil.zscore.tbu,
+                  hasil.zscore.bbtb
+                );
+
+                let alertStyle = "bg-green-50 border-green-100";
+                let titleStyle = "text-green-700";
+
+                if (rec.alertLevel === "severe") {
+                  alertStyle = "bg-red-50 border-red-100";
+                  titleStyle = "text-red-700";
+                } else if (rec.alertLevel === "warning") {
+                  alertStyle = "bg-yellow-50 border-yellow-100";
+                  titleStyle = "text-yellow-700";
+                } else if (rec.alertLevel === "excess") {
+                  alertStyle = "bg-blue-50 border-blue-100";
+                  titleStyle = "text-blue-700";
+                }
+
+                return (
+                  <div className={`p-4 rounded-lg border ${alertStyle}`}>
+                    <h4 className={`font-bold ${titleStyle} text-lg mb-2`}>
+                      {rec.title}
+                    </h4>
+                    <p className="text-sm mb-3">{rec.description}</p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                      <div>
+                        <h5 className="font-semibold text-sm mb-1">
+                          Kebutuhan Gizi:
+                        </h5>
+                        <ul className="text-sm space-y-1.5 list-disc pl-4">
+                          <li>
+                            <span className="font-medium">Energi:</span>{" "}
+                            {rec.energy}
+                          </li>
+                          <li>
+                            <span className="font-medium">Protein:</span>{" "}
+                            {rec.protein}
+                          </li>
+                          <li>
+                            <span className="font-medium">
+                              Mikronutrien fokus:
+                            </span>{" "}
+                            {rec.micronutrients}
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div>
+                        <h5 className="font-semibold text-sm mb-1">
+                          Contoh Menu:
+                        </h5>
+                        <p className="text-sm">{rec.foodExamples}</p>
+                      </div>
+                    </div>
+
+                    {rec.alertLevel === "severe" && (
+                      <div className="mt-4 flex items-center p-3 bg-red-100 rounded-lg border border-red-200 text-red-700 text-sm">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                          />
+                        </svg>
+                        <span>
+                          Konsultasikan segera ke Posyandu atau Puskesmas
+                          terdekat untuk penanganan lebih lanjut.
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* Additional general advice section */}
+              <div className="mt-4 text-sm text-gray-700">
+                <h5 className="font-semibold mb-1">Saran Umum:</h5>
+                <ul className="space-y-1 list-disc pl-4">
+                  <li>Berikan makanan beragam dengan pola gizi seimbang</li>
+                  <li>Pantau pertumbuhan anak secara rutin di Posyandu</li>
+                  <li>Perhatikan kebersihan dalam penyiapan makanan</li>
+                  <li>Ajak anak bermain aktif setiap hari minimal 60 menit</li>
+                </ul>
+              </div>
             </div>
           </div>
         )}
